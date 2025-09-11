@@ -16,7 +16,7 @@ namespace mtl
 
         void reserve(size_t new_cap)
         {
-            LOG("[DEBUG] [mtl::vector::reserve] Reserving new capacity: %i \n", new_cap);
+            LOG("[DEBUG] [mtl::vector::reserve] Reserving new capacity: %llu \n", new_cap);
             if (new_cap > capacity())
             {
                 grow(new_cap);
@@ -26,7 +26,7 @@ namespace mtl
         void push_back(const T& value)
         {
             LOG("[DEBUG] [mtl::vector::push_back] Pushing back element \n");
-            grow_if_needed();
+            ensure_capacity();
 
             begin[size()] = std::move(value);
             ++end;
@@ -35,7 +35,7 @@ namespace mtl
         template <typename ...Args>
         T& emplace_back(Args&&... args)
         {
-            grow_if_needed();
+            ensure_capacity();
             T* place = begin + size();
             new (place) T(std::forward<Args>(args)...);
             ++end;
@@ -49,7 +49,7 @@ namespace mtl
                 begin[size()].~T();
                 --end;
             }
-            LOG("[DEBUG] [mtl::vector::pop_back] After pop_back size: %i, capacity: %i \n", size(), capacity());
+            LOG("[DEBUG] [mtl::vector::pop_back] After pop_back size: %llu , capacity: %llu \n", size(), capacity());
         }
 
         bool empty()
@@ -90,7 +90,7 @@ namespace mtl
         T* end = nullptr;
         T* end_cap = nullptr;
 
-        void grow_if_needed()
+        void ensure_capacity()
         {
             if (begin == nullptr)
             {
@@ -103,7 +103,7 @@ namespace mtl
 
         void grow(size_t new_cap)
         {
-            LOG("[DEBUG] [mtl::vector::grow] Growing with new capacity: %i \n", new_cap);
+            LOG("[DEBUG] [mtl::vector::grow] Growing with new capacity: %llu \n", new_cap);
             T* newBlock = new T[new_cap];
             size_t old_size = size();
 
