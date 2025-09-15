@@ -1,7 +1,7 @@
 #ifndef MATH_HPP
 #define MATH_HPP
 
-#include "Logger.hpp"
+#include "logger.hpp"
 
 namespace mtl
 {
